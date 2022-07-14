@@ -1,4 +1,5 @@
 import { Site } from "../models/siteModel.js";
+import { User } from "../models/userModel.js";
 export const addSite = async (req, res) => {
   const site = new Site({
     owner: {
@@ -7,11 +8,17 @@ export const addSite = async (req, res) => {
     username: req.user.userName,
     ...req.body,
   });
+  const user = await User.findByIdAndUpdate(req.user._id, {
+    $push: { sites: { id: site._id, logo: site.logo, title: site.title } },
+  });
   try {
     await site.save();
-    return res.status(200).send(site);
+    if (site) {
+      await user.save();
+    }
+    res.status(200).send(site);
   } catch (err) {
-    res.send(err);
+    res.status(400).send(err);
   }
 };
 export const getSite = async (req, res) => {
@@ -38,9 +45,20 @@ export const updateSite = async (req, res) => {
         runValidators: true,
       }
     );
+    const user = await User.findByIdAndUpdate(req.user._id, {
+      $set: {
+        sites: {
+          id: site._id,
+          logo: site.logo,
+          title: site.title,
+        },
+      },
+    });
     if (!site) {
       return res.status(404).send();
     }
+    await user.save();
+    await site.save();
     res.send(site);
   } catch (err) {
     res.send(err);
@@ -52,7 +70,15 @@ export const deleteSite = async (req, res) => {
       _id: req.params.id,
       owner: { id: req.user._id.toString() },
     });
-    console.log(req.params.id, req.user._id);
+    const user = await User.findByIdAndUpdate(req.user._id, {
+      $pull: { sites: { id: site._id } },
+    });
+    if (!site) {
+      return res.status(404).send();
+    }
+    await user.save();
+    await site.save();
+
     res.send(site);
   } catch (err) {
     res.send(err);

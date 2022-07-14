@@ -11,16 +11,28 @@ const siteSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  Email: {
+    type: String,
+    required: true,
+    validate: {
+      validator(value) {
+        if (!validator.isEmail(value)) {
+          throw new Error("not a valid Email");
+        }
+      },
+    },
+  },
   title: {
     type: String,
     required: true,
     trim: true,
-    minlength: 3,
-    maxlength: 15,
+    minlength: [3, "Title must be at least 3 characters"],
+    maxlength: [15, "Title must be at most 15 characters"],
     unique: true,
-    validate: {
-      validator: validator.isAlphanumeric,
-      message: "Title must be alphanumeric",
+    validator(value) {
+      if (!validator.isAlphanumeric(value)) {
+        throw new Error("Title must be alphanumeric");
+      }
     },
   },
   logo: {
@@ -34,7 +46,7 @@ const siteSchema = new mongoose.Schema({
       type: String,
       validate: {
         validator(value) {
-          if (!validator.isURL) {
+          if (value && !validator.isURL(value)) {
             throw new Error("not a valid URL");
           }
         },
@@ -62,7 +74,7 @@ const siteSchema = new mongoose.Schema({
       type: String,
       required: true,
       validator(value) {
-        if (!validator.isURL) {
+        if (!validator.isURL(value)) {
           throw new Error("not a valid URL");
         }
       },
@@ -84,7 +96,7 @@ const siteSchema = new mongoose.Schema({
         type: String,
         required: true,
         validator(value) {
-          if (!validator.isURL) {
+          if (!validator.isURL(value)) {
             throw new Error("not a valid URL");
           }
         },

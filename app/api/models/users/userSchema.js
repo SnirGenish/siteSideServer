@@ -9,6 +9,17 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
+  profilePic: {
+    type: String,
+    required: true,
+    validate: {
+      validator: (value) => {
+        if (!validator.isURL(value) && value) {
+          throw new Error("not a valid URL");
+        }
+      },
+    },
+  },
   email: {
     type: String,
     unique: true,

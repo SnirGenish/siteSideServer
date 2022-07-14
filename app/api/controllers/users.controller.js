@@ -5,9 +5,9 @@ export const addUser = async (req, res) => {
     const newUser = new User(body);
     const token = await newUser.generateAuthToken();
     const saveUser = await newUser.save();
-    res.send({ saveUser, token });
+    res.send({ newUser, token });
   } catch (err) {
-    res.send(err);
+    res.status(400).send(err);
   }
 };
 
@@ -24,7 +24,7 @@ export const logIn = async (req, res) => {
     const token = await user.generateAuthToken();
     res.send({ user, token });
   } catch (err) {
-    res.status(400).send("nope");
+    res.status(400).send(err);
   }
 };
 
@@ -34,7 +34,7 @@ export const logOut = async (req, res) => {
       return token.token !== req.token;
     });
     await req.user.save();
-    res.send();
+    res.send(true);
   } catch (e) {
     res.status(500).send();
   }
