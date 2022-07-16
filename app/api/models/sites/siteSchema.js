@@ -28,7 +28,6 @@ const siteSchema = new mongoose.Schema({
     trim: true,
     minlength: [3, "Title must be at least 3 characters"],
     maxlength: [15, "Title must be at most 15 characters"],
-    unique: true,
     validator(value) {
       if (!validator.isAlphanumeric(value)) {
         throw new Error("Title must be alphanumeric");

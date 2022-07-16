@@ -9,7 +9,15 @@ export const addSite = async (req, res) => {
     ...req.body,
   });
   const user = await User.findByIdAndUpdate(req.user._id, {
-    $push: { sites: { id: site._id, logo: site.logo, title: site.title } },
+    $push: {
+      sites: {
+        id: site._id,
+        logo: site.logo,
+        title: site.title,
+        color: site.color[2],
+        font: site.font,
+      },
+    },
   });
   try {
     await site.save();

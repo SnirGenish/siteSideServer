@@ -61,3 +61,31 @@ export const deleteUser = async (req, res) => {
     res.status(500).send(err);
   }
 };
+
+export const getUserByName = async (req, res) => {
+  const name = req.params.name;
+  try {
+    const user = await User.findOne({ userName: name });
+    if (user) {
+      res.send(true);
+    } else {
+      res.send(false);
+    }
+  } catch (err) {
+    res.status(500).send(err);
+  }
+};
+
+export const getUserByEmail = async (req, res) => {
+  const email = req.params.email;
+  try {
+    const user = await User.findOne({ email });
+    if (user) {
+      res.send(true);
+    } else {
+      res.send(false);
+    }
+  } catch (err) {
+    res.status(500).send(err);
+  }
+};

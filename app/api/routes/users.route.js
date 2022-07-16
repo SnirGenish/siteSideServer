@@ -7,6 +7,8 @@ import {
   updateUser,
   getUser,
   deleteUser,
+  getUserByName,
+  getUserByEmail,
 } from "../controllers/users.controller.js";
 
 export const usersRoute = express.Router();
@@ -22,3 +24,7 @@ usersRoute.post("/logOut", auth, logOut);
 usersRoute.patch("/me", auth, updateUser);
 
 usersRoute.delete("/me", auth, deleteUser);
+
+usersRoute.get("/name/:name", getUserByName);
+
+usersRoute.get("/email/:email", getUserByEmail);
